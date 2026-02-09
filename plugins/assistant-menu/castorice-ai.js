@@ -45,7 +45,7 @@ export default {
         try {
             const ownerPhoto = getOwnerImage();
             const timestamp = speed();
-            const fakeQuoted = {
+            const fake = {
                 key: {
                     fromMe: false,
                     participant: `0@s.whatsapp.net`,
@@ -60,7 +60,7 @@ export default {
                 await conn.sendMessage(m.chat, { react: { text: '❓', key: m.key } });
                 const captEmpty = `Kenapa sayang? Kok panggil aja tapi nggak nanya apa-apa? Castorice udah nungguin Mas Radja lho.. ❤️💦`;
                 return ownerPhoto 
-                    ? conn.sendMessage(m.chat, { image: ownerPhoto, caption: captEmpty }, { quoted: fakeQuoted })
+                    ? conn.sendMessage(m.chat, { image: ownerPhoto, caption: captEmpty }, { quoted: fake })
                     : m.reply(captEmpty);
             }
 
@@ -127,7 +127,7 @@ Aturan:
                                  `  ◦  *Status:* Connected (HF) ❤️`;
 
             if (ownerPhoto) {
-                await conn.sendMessage(m.chat, { image: ownerPhoto, caption: finalCaption }, { quoted: fakeQuoted });
+                await conn.sendMessage(m.chat, { image: ownerPhoto, caption: finalCaption }, { quoted: fake });
             } else {
                 await m.reply(finalCaption);
             }

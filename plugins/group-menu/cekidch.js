@@ -7,48 +7,79 @@ export default {
     isOwner: true,
     isGroup: true,
     isBotAdmin: true,
+
     async exec({ conn, m, text, usedPrefix, command }) {
-        // 1. Validasi Input
+
+        // ── 1. VALIDASI INPUT
+        const fake = {
+            key: { fromMe: false, participant: `0@s.whatsapp.net`, remoteJid: "status@broadcast" },
+            message: { conversation: command }
+        };
+        const fail = {
+            key: { fromMe: false, participant: "0@s.whatsapp.net", remoteJid: "status@broadcast" },
+            message: { conversation: "❌failed" }
+        };
+
         if (!text) {
             await conn.sendMessage(m.chat, { react: { text: '❓', key: m.key } });
-            return conn.sendMessage(m.chat, { 
-                image: { url: global.grup }, 
-                caption: `⚠️ Masukkan URL Channel WhatsApp!\nContoh: ${usedPrefix + command} https://whatsapp.com/channel/xxxxx` 
-            }, { quoted: m });
+            return conn.sendMessage(m.chat, {
+                image: { url: global.grup },
+                caption: `⚠️ *Masukkan URL Channel WhatsApp!*\n\nContoh:\n${usedPrefix + command} https://whatsapp.com/channel/xxxxx`
+            }, { quoted: fail });
         }
 
-        // 2. React Awal (⏱️ & 🔍)
+        // ── 2. REACT PROSES
         await conn.sendMessage(m.chat, { react: { text: '⏱️', key: m.key } });
 
         try {
-            const apiUrl = `https://api-faa.my.id/faa/cekidch?url=${encodeURIComponent(text)}`;
-            const { data } = await axios.get(apiUrl);
+            // ── HANDLE REDIRECT
+            const res = await axios.get(text, {
+                maxRedirects: 5,
+                validateStatus: () => true
+            });
+            const finalUrl = res.request?.res?.responseUrl || text;
 
-            if (!data.status || !data.result) throw new Error("Data channel tidak ditemukan.");
+            // ── EXTRACT INVITE CODE
+            const inviteCode = finalUrl.split('/channel/')[1];
+            if (!inviteCode) throw new Error('URL channel tidak valid');
 
-            const res = data.result;
+            // ── STEP 1: INVITE → ID
+            const metaInvite = await conn.newsletterMetadata('invite', inviteCode);
+            if (!metaInvite?.id) throw new Error('Gagal mengambil ID channel');
 
-            let caption = `🔍 *INFORMASI CHANNEL WHATSAPP*\n\n`;
-            caption += `🆔 *ID:* ${res.id || '-'}\n`;
-            caption += `🔗 *Link:* ${text}\n\n`;
+            // ── STEP 2: ID → METADATA ASLI
+            const meta = await conn.newsletterMetadata('jid', metaInvite.id);
+            if (!meta) throw new Error('Gagal mengambil metadata channel');
 
-            // 3. Kirim Respon (Pake Image Channel jika ada, jika tidak pake global.grup)
-            await conn.sendMessage(m.chat, { 
-                image: { url: res.image || global.grup }, 
-                caption: caption 
-            }, { quoted: m });
+            // ── 6. FORMAT OUTPUT
+            let caption = `╭──── ❏ I N F O  C H A N E L ❏\n`;
+            caption += `│ \`\`\` Nama       : ${meta.name || '-'}\`\`\`\n`;
+            caption += `│ \`\`\` Follower   : ${meta.subscribersCount?.toLocaleString() || '0'}\`\`\`\n`;
+            caption += `│ \`\`\` Status     : ${meta.isVerified ? 'Verified ✅' : 'Unverified'}\`\`\`\n`;
+            caption += `╰── ❏\n\n`;
+            caption += `❏ L I N K ❏\n`;
+            caption += `https://whatsapp.com/channel/${inviteCode}\n\n`;
+            caption += `❏ I D  C H A N E L ❏\n`;
+            caption += `${meta.id}`;
 
-            // 4. React Sukses
+            // ── 7. KIRIM HASIL
+            await conn.sendMessage(m.chat, {
+                image: { url: global.grup },
+                caption
+            }, { quoted: fake });
+
+            // ── 8. REACT SUKSES
             await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
 
         } catch (e) {
             console.error(e);
-            // 5. React & Respon Gagal
+
+            // ── ERROR RESPONSE
             await conn.sendMessage(m.chat, { react: { text: '❌', key: m.key } });
-            await conn.sendMessage(m.chat, { 
-                image: { url: global.grup }, 
-                caption: `❌ *Gagal:* ${e.message}` 
-            }, { quoted: m });
+            await conn.sendMessage(m.chat, {
+                image: { url: global.grup },
+                caption: `❏ K E S A L A H A N  S Y S T E M ❏\nPastikan:\n • Link valid\n • Channel bersifat publik\n • Bot terhubung dengan normal`
+            }, { quoted: fail });
         }
     }
 };

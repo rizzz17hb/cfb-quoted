@@ -47,7 +47,7 @@ export default async (conn, m) => {
 
         const user = global.db.users[m.sender];
         const chat = m.isGroup ? global.db.chats[m.chat] : null;
-        const fakeQuoted = {
+        const fake = {
             key: { fromMe: false, participant: "0@s.whatsapp.net", remoteJid: "status@broadcast" },
             message: { conversation: "😉reminder" }
         };
@@ -62,7 +62,7 @@ export default async (conn, m) => {
             await conn.sendMessage(m.chat, {
                 image: { url: global.premium },
                 caption: `🚀 *INFO:* Masa premium kamu telah habis. Kembali ke status Free.`
-            }, { quoted: fakeQuoted });
+            }, { quoted: fake });
         }
 
         if (user) {
@@ -125,14 +125,14 @@ export default async (conn, m) => {
                 return conn.sendMessage(m.chat, { 
                 image: { url: global.url },
                 caption: "⏱️ Slow down... Tunggu *${cooldownTime}s* lagi." 
-            }, { quoted: fakeQuoted });
+            }, { quoted: fake });
             }
 
             if (targetPlugin.limit && user.limit <= 0 && !user.premium && !m.isOwner) {
                 return conn.sendMessage(m.chat, { 
                 image: { url: global.url },
                 caption: "❌ Limit harian kamu habis!" 
-            }, { quoted: fakeQuoted });
+            }, { quoted: fake });
             }
 
             try {

@@ -4,9 +4,17 @@ export default {
     name: 'igaudio',
     alias: ['instaaudio', 'igmp3', 'reelsaudio'],
     category: 'download',
-    async exec({ conn, m, text }) {
+    async exec({ conn, m, text, command }) {
         // Membersihkan url dari spasi atau karakter liar
         let url = text?.trim().split(/\?| /)[0]; 
+        const fake = {
+            key: { fromMe: false, participant: `0@s.whatsapp.net`, remoteJid: "status@broadcast" },
+            message: { conversation: command }
+        };
+        const fail = {
+            key: { fromMe: false, participant: "0@s.whatsapp.net", remoteJid: "status@broadcast" },
+            message: { conversation: "❌failed" }
+        };
 
         if (!url) return;
 
@@ -18,7 +26,7 @@ export default {
                     image: { url: global.download },
                     caption: "❌ *Link Instagram tidak valid!*\nPastikan linknya bener ya (Reel/Post/Story)."
                 },
-                { quoted: m }
+                { quoted: fail }
             );
         }
 
@@ -45,11 +53,11 @@ export default {
                             renderLargerThumbnail: false
                         }
                     }
-                }, { quoted: m });
+                }, { quoted: fake });
 
                 await m.react('✅');
             } catch (err) {
-                await conn.sendMessage(m.chat, { audio: { url: audioUrl }, mimetype: 'audio/mpeg' }, { quoted: m });
+                await conn.sendMessage(m.chat, { audio: { url: audioUrl }, mimetype: 'audio/mpeg' }, { quoted: fake });
             }
         };
 
@@ -67,9 +75,9 @@ export default {
                 m.chat,
                 {
                     image: { url: global.download },
-                    caption: "Gagal mengambil audio. Link mungkin privat atau audio tidak tersedia di server cadangan."
+                    caption: "❏ K E S A L A H A N  S Y S T E M ❏\nAlasan: Gagal mengambil audio. Link mungkin privat atau audio tidak tersedia di server cadangan."
                 },
-                { quoted: m }
+                { quoted: fail }
             );
         }
     }

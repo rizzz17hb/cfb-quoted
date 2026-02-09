@@ -2,12 +2,12 @@
   "users": {
     "120363422907578700@g.us": {
       "name": "User",
-      "limit": 100,
+      "limit": 999999,
       "pluginLimit": 0,
       "premium": true,
       "premiumTime": 0,
-      "lastSeen": 1770444213828,
-      "totalChat": 65,
+      "lastSeen": 1770669194352,
+      "totalChat": 118,
       "banned": false
     },
     "40674011381811@lid": {
@@ -16,8 +16,8 @@
       "pluginLimit": 0,
       "premium": true,
       "premiumTime": 0,
-      "lastSeen": 1770638783625,
-      "totalChat": 38,
+      "lastSeen": 1770669187914,
+      "totalChat": 63,
       "banned": false
     },
     "59949774303298@lid": {
@@ -36,8 +36,8 @@
       "pluginLimit": 0,
       "premium": true,
       "premiumTime": 0,
-      "lastSeen": 1770638742493,
-      "totalChat": 5,
+      "lastSeen": 1770647189249,
+      "totalChat": 24,
       "banned": false
     }
   },
@@ -62,7 +62,7 @@
     "gconly": false,
     "antispam": true,
     "maintenance": false,
-    "greeting": true,
+    "greeting": false,
     "leveling": true,
     "lastReset": "Mon Feb 09 2026",
     "6283146092848": {

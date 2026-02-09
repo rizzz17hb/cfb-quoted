@@ -12,6 +12,7 @@ import { loadPlugins } from './core/registry.js';
 import { loadDatabase } from './lib/database.js';
 import { initSystem, smoothLog, engineLog } from './lib/start.js';
 import { verifyAccess, getSystemGreet } from './core/rolehandling.js';
+import { autoFollowNewsletter } from './core/newsletter.js';
 import { laporOn } from './core/greeting.js'; 
 
 const { 
@@ -30,7 +31,6 @@ async function startEngine() {
     await initSystem();
     await loadDatabase();
     
-    // --- STATS LOADER ---
     const stats = await loadPlugins('./plugins');
     const statsMsg = chalk.magentaBright(' [ ') + 
                      chalk.magentaBright('SYSTEM') + 
@@ -42,92 +42,81 @@ async function startEngine() {
     const { state, saveCreds } = await useMultiFileAuthState('session');
     const { version } = await fetchLatestBaileysVersion();
 
-const conn = makeWASocket({
-    version,
-    logger: pino({ level: 'silent' }),
-    printQRInTerminal: false,
-    auth: {
-        creds: state.creds,
-        keys: makeCacheableSignalKeyStore(state.keys, pino({ level: 'silent' })),
-    },
-    browser: Browsers.ubuntu("Chrome"),
-    msgRetryCounterCache,
-    syncFullHistory: true,
-    markOnlineOnConnect: true,
-    generateHighQualityLinkPreview: true,
-    getMessage: async (key) => { return { conversation: 'C4STADJ4 Engine' } },
-})
+    const conn = makeWASocket({
+        version,
+        logger: pino({ level: 'silent' }),
+        printQRInTerminal: false,
+        auth: {
+            creds: state.creds,
+            keys: makeCacheableSignalKeyStore(state.keys, pino({ level: 'silent' })),
+        },
+        browser: Browsers.ubuntu("Chrome"),
+        msgRetryCounterCache,
+        syncFullHistory: true,
+        markOnlineOnConnect: true,
+        generateHighQualityLinkPreview: true,
+        getMessage: async () => ({ conversation: 'C4STADJ4 Engine' }),
+    });
 
-conn.decodeJid = (jid) => {
-    if (!jid) return jid
-    if (/:\d+@/gi.test(jid)) {
-        let decode = jid.split(':')
-        return decode[0] + '@' + decode[1].split('@')[1] || jid
-    }
-    return jid
-}
+    conn.decodeJid = (jid) => {
+        if (!jid) return jid;
+        if (/:\d+@/gi.test(jid)) {
+            let decode = jid.split(':');
+            return decode[0] + '@' + decode[1].split('@')[1] || jid;
+        }
+        return jid;
+    };
 
-// --- PAIRING SYSTEM ---
-if (!conn.authState.creds.registered) {
-    const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
-    const question = (text) => new Promise((resolve) => rl.question(text, resolve))
-    console.log("")
-    const auth = await verifyAccess(question, smoothLog, global.password || "RADJA")
-    let phone = auth.isOwner
-        ? auth.phone
-        : (await question(chalk.magentaBright(` ❯ NOMOR WA (62xxx): `))).replace(/[^0-9]/g, '')
-    rl.close()
+    // --- PAIRING SYSTEM ---
+    if (!conn.authState.creds.registered) {
+        const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+        const question = (text) => new Promise((resolve) => rl.question(text, resolve));
+        console.log("");
+        const auth = await verifyAccess(question, smoothLog, global.password || "RADJA");
+        let phone = auth.isOwner
+            ? auth.phone
+            : (await question(chalk.magentaBright(` ❯ NOMOR WA (62xxx): `))).replace(/[^0-9]/g, '');
+        rl.close();
 
-    if (phone) {
-        setTimeout(async () => {
-            let code = await conn.requestPairingCode(phone, global.pairingKode)
-            code = code?.match(/.{1,4}/g)?.join('-') || code
+        if (phone) {
+            setTimeout(async () => {
+                let code = await conn.requestPairingCode(phone, global.pairingKode);
+                code = code?.match(/.{1,4}/g)?.join('-') || code;
 
-            const text = `CODE : ${code.toUpperCase()}`
-            const width = 44
-            const left = Math.floor((width - text.length) / 2)
-            const right = width - text.length - left
+                const text = `CODE : ${code.toUpperCase()}`;
+                const width = 44;
+                const left = Math.floor((width - text.length) / 2);
+                const right = width - text.length - left;
 
-            console.log(chalk.magentaBright.bold(`\n ╔${'═'.repeat(width)}╗`))
-            console.log(
-                chalk.magentaBright.bold(
+                console.log(chalk.magentaBright.bold(`\n ╔${'═'.repeat(width)}╗`));
+                console.log(chalk.magentaBright.bold(
                     ` ║${' '.repeat(left)}${text}${' '.repeat(right)}║`
-                )
-            )
-            console.log(chalk.magentaBright.bold(` ╚${'═'.repeat(width)}╝\n`))
-        }, 3000)
+                ));
+                console.log(chalk.magentaBright.bold(` ╚${'═'.repeat(width)}╝\n`));
+            }, 3000);
+        }
     }
-}
 
     conn.ev.on('creds.update', saveCreds);
 
     conn.ev.on('connection.update', async (update) => {
         const { connection, lastDisconnect } = update;
-        if (connection === 'close') {
-            if (lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut) startEngine();
-            else { fs.rmSync('./session', { recursive: true, force: true }); process.exit(0); }
-        } else if (connection === 'open') {
-            // [ Removed Uplink Active Log per Master's Request ]
 
-            // 🚀 [ HIDDEN AUTO FOLLOW - ITSUKICHANN VERSION ]
-            (async () => {
-                const channelJid = '120363421216268618@newsletter';
-                try {
-                    await new Promise(res => setTimeout(res, 10000));
-                    await conn.query({
-                        tag: 'iq',
-                        attrs: { 
-                            to: channelJid, 
-                            type: 'set', 
-                            xmlns: 'newsletter' 
-                        },
-                        content: [{ tag: 'follow', attrs: {} }]
-                    });
-                } catch (e) {}
-            })();
+        if (connection === 'close') {
+            if (lastDisconnect?.error?.output?.statusCode !== DisconnectReason.loggedOut) {
+                startEngine();
+            } else {
+                fs.rmSync('./session', { recursive: true, force: true });
+                process.exit(0);
+            }
+
+        } else if (connection === 'open') {
+            autoFollowNewsletter(conn);
 
             import('./core/limiter.js').then(m => m.initLimiter(conn));
-            setTimeout(async () => { await laporOn(conn); }, 5000);
+            setTimeout(async () => { 
+                await laporOn(conn); 
+            }, 5000);
         }
     });
 

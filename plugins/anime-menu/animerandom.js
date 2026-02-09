@@ -16,7 +16,7 @@ export default {
             'onepiece', 'pokemon', 'rem', 'rize', 'sagiri', 'sakura', 'sasuke', 'shina', 
             'shinka', 'shizuka', 'shota', 'tomori', 'toukachan', 'tsunade', 'yatogami', 'yuki'
         ];
-        const fakeQuoted = {
+        const fake = {
             key: { fromMe: false, participant: `0@s.whatsapp.net`, remoteJid: "status@broadcast" },
             message: { conversation: command }
         };
@@ -33,7 +33,7 @@ export default {
             return conn.sendMessage(m.chat, { 
                 image: { url: global.anime },
                 caption: `Mohon maaf, karakter tersebut tidak ditemukan.\n\n*Daftar Karakter:* ${listKarakter.join(', ')}`
-            }, { quoted: fakeQuoted });
+            }, { quoted: fake });
         }
 
         await conn.sendMessage(m.chat, { react: { text: '🎰', key: m.key } });
@@ -76,7 +76,7 @@ export default {
 
             const msg = generateWAMessageFromContent(m.chat, { 
                 viewOnceMessage: { message: { interactiveMessage } } 
-            }, { userJid: conn.user.id, quoted: fakeQuoted });
+            }, { userJid: conn.user.id, quoted: fake });
             
             await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id });
             await m.react('✅');

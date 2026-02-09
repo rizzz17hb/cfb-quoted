@@ -8,7 +8,7 @@ export default {
     limit: true,
     async exec({ conn, m, args, text, command }) {
         let input = text || (m.quoted ? m.quoted.text : args[0]);
-        const fakeQuoted = {
+        const fake = {
             key: { fromMe: false, participant: `0@s.whatsapp.net`, remoteJid: "status@broadcast" },
             message: { conversation: command }
         };
@@ -25,7 +25,7 @@ export default {
             return conn.sendMessage(m.chat, { 
                 image: { url: global.download },
                 caption: "Mana link Instagramnya?\nPastikan link yang kamu masukkan benar ya!" 
-            }, { quoted: fakeQuoted });
+            }, { quoted: fail });
         }
 
         // Bersihkan URL dari parameter sampah (?igsh=... dsb) biar API & Button aman
@@ -41,11 +41,13 @@ export default {
             const urls = data.urls;
             
             // Format Caption Metadata
-            const captionInfo = `*Ｉ Ｎ Ｓ Ｔ Ａ Ｇ Ｒ Ａ Ｍ*\n\n` +
-                                `👤 *User:* ${data.username}\n` +
-                                `❤️ *Likes:* ${data.like}\n` +
-                                `💬 *Comments:* ${data.comment}\n\n` +
-                                `📝 *Caption:* ${data.caption}`;
+            const captionInfo = `╭─── ❏ Ｉ Ｎ Ｓ Ｔ Ａ Ｇ Ｒ Ａ Ｍ ❏\n` +
+                                `│ \`\`\`➣ Username : ${data.username}\`\`\`\n` +
+                                `│ \`\`\`➣ Likes    : ${data.like}\`\`\`\n` +
+                                `│ \`\`\`➣ Comments : ${data.comment}\`\`\`\n` +
+                                `╰─ ❏\n` +
+                                `➣ 𝙲 𝙰 𝙿 𝚃 𝙸 𝙾 𝙽: ${data.caption}\n` +
+                                ` ${data.caption}`;
 
             if (urls.length > 1) {
                 await m.react('📸');
@@ -104,7 +106,7 @@ export default {
                 viewOnceMessage: { 
                     message: { interactiveMessage } 
                 } 
-            }, { userJid: conn.user.id, quoted: fakeQuoted });
+            }, { userJid: conn.user.id, quoted: fake });
 
             await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id });
             await m.react('✅');

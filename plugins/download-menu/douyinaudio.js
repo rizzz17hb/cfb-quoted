@@ -7,7 +7,7 @@ export default {
     category: 'download',
     async exec({ conn, m, text, args, usedPrefix, command }) {
         let url = text || (m.quoted ? m.quoted.text : args[0]);
-        const fakeQuoted = {
+        const fake = {
             key: { fromMe: false, participant: `0@s.whatsapp.net`, remoteJid: "status@broadcast" },
             message: { conversation: command }
         };
@@ -24,7 +24,7 @@ export default {
             return conn.sendMessage(m.chat, { 
                 image: { url: global.download }, 
                 caption: `Masukkan link Douyin/TikTok!\nContoh: ${usedPrefix + command} https://v.douyin.com/xxx/` 
-            }, { quoted: fakeQuoted });
+            }, { quoted: fail });
 
         } 
 
@@ -73,7 +73,7 @@ export default {
             await conn.sendMessage(m.chat, { 
                 audio: audioBuffer, 
                 mimetype: 'audio/mpeg'
-            }, { quoted: fakeQuoted });
+            }, { quoted: fake });
 
             // 7. React Sukses
             await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } });

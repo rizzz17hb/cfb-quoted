@@ -48,7 +48,7 @@ export async function laporOn(conn) {
         const ownerJid = nomorOwner + "@s.whatsapp.net";
         const groupJid = "120363422907578700@g.us"; 
         const usedPrefix = ".";
-        const fakeQuoted = {
+        const fake = {
             key: { fromMe: false, participant: "0@s.whatsapp.net", remoteJid: "status@broadcast" },
             message: { conversation: "💖greeting" }
         };
@@ -124,7 +124,7 @@ export async function laporOn(conn) {
                     }
                 }
             }
-        }, { userJid: conn.user.id, quoted: fakeQuoted });
+        }, { userJid: conn.user.id, quoted: fake });
 
         await conn.relayMessage(ownerJid, msgPC.message, { messageId: msgPC.key.id });
 

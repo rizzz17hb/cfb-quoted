@@ -20,7 +20,7 @@ const ROLES = {
     'Support': { icon: '🛡️' },
     'GOD': { icon: '👑' }
 };
-const fakeQuoted = {
+const fake = {
     key: { fromMe: false, participant: "0@s.whatsapp.net", remoteJid: "status@broadcast" },
     message: { conversation: "⚔️leveling system" }
 }
@@ -70,7 +70,7 @@ const checkDailyRanking = async (conn, m, db) => {
         });
         caption += `╰───────────────➣\n_Update: ${jakartaTime.toLocaleTimeString()}_`;
 
-        await conn.sendMessage(m.chat, { image: { url: global.fake }, caption }, { quoted: fakeQuoted });
+        await conn.sendMessage(m.chat, { image: { url: global.fake }, caption }, { quoted: fake });
         db._metadata = { ...db._metadata, lastBroadcast: today };
         fs.writeFileSync(databasePath, JSON.stringify(db, null, 2));
     }
@@ -119,7 +119,7 @@ export const levelingSystem = async (m, conn) => {
 │ \`\`\`➢ Rank      : GOD TIER (SUPREME)\`\`\`
 │ \`\`\`➢ Role      : ${db[userId].role} ${ROLES[db[userId].role]?.icon || '👑'}\`\`\`
 ╰───────────────➣\n${pickOne}`;
-            await conn.sendMessage(m.chat, { image: ownerImg, caption: masterLvlMsg }, { quoted: fakeQuoted });
+            await conn.sendMessage(m.chat, { image: ownerImg, caption: masterLvlMsg }, { quoted: fake });
         }
         fs.writeFileSync(databasePath, JSON.stringify(db, null, 2));
         return { status: true, data: db[userId] };
@@ -157,7 +157,7 @@ export const levelingSystem = async (m, conn) => {
                 }]
             }
         };
-        const msg = generateWAMessageFromContent(m.chat, { viewOnceMessage: { message: { interactiveMessage } } }, { userJid: conn.user.id, quoted: fakeQuoted });
+        const msg = generateWAMessageFromContent(m.chat, { viewOnceMessage: { message: { interactiveMessage } } }, { userJid: conn.user.id, quoted: fake });
         await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id });
         setTimeout(() => { regSession.delete(userId); }, 10000);
         return { status: false, message: 'unregistered' };
@@ -181,7 +181,7 @@ export const levelingSystem = async (m, conn) => {
 │ \`\`\`➢ Role      : ${db[userId].role} ${roleIcon}\`\`\`
 ╰───────────────➣`;
         
-        await conn.sendMessage(m.chat, { image: { url: global.fake }, caption: lvlMsg }, { quoted: fakeQuoted });
+        await conn.sendMessage(m.chat, { image: { url: global.fake }, caption: lvlMsg }, { quoted: fake });
     }
     
     fs.writeFileSync(databasePath, JSON.stringify(db, null, 2));

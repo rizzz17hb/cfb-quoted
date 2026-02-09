@@ -5,8 +5,16 @@ export default {
     alias: ['igaudiov2', 'instamp3v2'],
     category: 'download',
     limit: true,
-    async exec({ conn, m, args, text }) {
+    async exec({ conn, m, args, text, command }) {
         let input = text || (m.quoted ? m.quoted.text : args[0]);
+        const fake = {
+            key: { fromMe: false, participant: `0@s.whatsapp.net`, remoteJid: "status@broadcast" },
+            message: { conversation: command }
+        };
+        const fail = {
+            key: { fromMe: false, participant: "0@s.whatsapp.net", remoteJid: "status@broadcast" },
+            message: { conversation: "❌failed" }
+        };
 
         if (!input || !/instagram\.com/i.test(input)) {
             // --- 1. REACT PAS LINK KOSONG / SALAH ---
@@ -16,7 +24,7 @@ export default {
             return conn.sendMessage(m.chat, { 
                 image: { url: global.download },
                 caption: "Mana link Instagramnya?\nPastikan link yang kamu masukkan benar ya!" 
-            }, { quoted: m });
+            }, { quoted: fail });
         }
 
         const regex = /(https?:\/\/(?:www\.)?instagram\.com\/(p|reel|tv)\/[a-zA-Z0-9_-]+\/?)/;
@@ -24,7 +32,7 @@ export default {
         if (!url) return conn.sendMessage(m.chat, { 
                 image: { url: global.download },
                 caption: "Link Instagram tidak valid!" 
-            }, { quoted: m });
+            }, { quoted: fail });
 
         await m.react('⏱️');
 
@@ -44,21 +52,21 @@ export default {
                 mimetype: 'audio/mp4',
                 ptt: false, 
                 fileName: 'ig-audio.mp3'
-            });
+            }, { userJid: conn.user.id, quoted: fake });
 
             await m.react('✅');
             conn.sendMessage(m.chat, {
                     image: { url: global.download },
                     caption: `Berhasil dikirim audionya ya ka...😉`
-                });
+                }, { userJid: conn.user.id, quoted: fake });
 
         } catch (e) {
             console.error(e);
             await m.react('❌');
             await conn.sendMessage(m.chat, {
                     image: { url: global.download },
-                    caption: `❌ *Error:* ${e.message}`
-                }, { quoted: m });
+                    caption: `❏ K E S A L A H A N  S Y S T E M ❏\nAlasan: ${e.message}`
+                }, { quoted: fail });
         }
     }
 };

@@ -135,7 +135,7 @@ export const createContext = async (conn, m) => {
                     title: global.botname || 'Castorice System',
                     body: global.namaOwner || 'System Developer',
                     thumbnailUrl: global.foto,
-                    sourceUrl: global.saluran,
+                    sourceUrl: global.chatowner,
                     mediaType: 1,
                     renderLargerThumbnail: false
                 },

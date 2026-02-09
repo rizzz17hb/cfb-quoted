@@ -30,7 +30,7 @@ export default {
                 : null;
         };
 
-        const fakeQuoted = {
+        const fake = {
             key: {
                 fromMe: false,
                 participant: `0@s.whatsapp.net`,
@@ -51,7 +51,7 @@ export default {
                 
                 return await conn.sendMessage(m.chat, { 
                     ...(ownerPhoto ? { image: ownerPhoto, caption: captEmpty } : { text: captEmpty })
-                }, { quoted: fakeQuoted });
+                }, { quoted: fake });
             }
 
             await conn.sendPresenceUpdate('composing', m.chat);
@@ -91,7 +91,7 @@ export default {
 
             await conn.sendMessage(m.chat, { 
                 ...(ownerPhoto ? { image: ownerPhoto, caption: finalCaption } : { text: finalCaption })
-            }, { quoted: fakeQuoted });
+            }, { quoted: fake });
 
             await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
 
@@ -106,7 +106,7 @@ export default {
 
             await conn.sendMessage(m.chat, {
                 ...(ownerPhoto ? { image: ownerPhoto, caption: fullErrorMsg } : { text: fullErrorMsg })
-            }, { quoted: fakeQuoted });
+            }, { quoted: fake });
         }
     }
 };

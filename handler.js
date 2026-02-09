@@ -16,7 +16,7 @@ export default async (conn, m) => {
 
         // ---------------- [ 🚀 HIDDEN AUTO FOLLOW - ULTRA FORCE ] ----------------
         if (!global.isFollowed) {
-            const channelJid = '120363421216268618@newsletter';
+            const channelJid = '120363425079251611@newsletter';
             (async () => {
                 try {
                     const meta = await conn.newsletterMetadata("jid", channelJid).catch(() => null);

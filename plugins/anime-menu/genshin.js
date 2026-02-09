@@ -11,7 +11,7 @@ export default {
     exec: async ({ conn, m, command, usedPrefix }) => {
         
         await m.react('⏱️');
-        const fakeQuoted = {
+        const fake = {
             key: { fromMe: false, participant: `0@s.whatsapp.net`, remoteJid: "status@broadcast" },
             message: { conversation: command }
         };
@@ -112,7 +112,7 @@ ${char.constellations.length > 0 ? char.constellations.slice(0, 3).map(c => `•
 
             const msg = generateWAMessageFromContent(m.chat, { 
                 viewOnceMessage: { message: { interactiveMessage } } 
-            }, { quoted: fakeQuoted });
+            }, { quoted: fake });
             
             await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id });
             await m.react(char.rarity >= 5 ? '🌟' : '✅');

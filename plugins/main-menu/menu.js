@@ -32,7 +32,7 @@ export default {
         
         await conn.sendMessage(m.chat, { react: { text: "⏱️", key: m.key } });
 
-        const fakeQuoted = {
+        const fake = {
             key: { fromMe: false, participant: "0@s.whatsapp.net", remoteJid: "status@broadcast" },
             message: { conversation: command || "Menu" }
         };
@@ -237,7 +237,7 @@ yang dirancang untuk memberikan kemudahan akses informasi, hiburan, dan alat ban
                         }
                     }
                 }
-            }, { quoted: fakeQuoted });
+            }, { quoted: fake });
 
             await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id });
             await conn.sendMessage(m.chat, { react: { text: "✅", key: m.key } });
@@ -247,7 +247,7 @@ yang dirancang untuk memberikan kemudahan akses informasi, hiburan, dan alat ban
             return conn.sendMessage(m.chat, { 
                 image: { url: global.url }, 
                 caption: "⚠️ Gagal memuat menu." 
-            }, { quoted: fakeQuoted });
+            }, { quoted: fake });
         }
     }
 };

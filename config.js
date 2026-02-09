@@ -21,7 +21,7 @@ global.owner = [
 global.namaOwner = "Radja Iblis";
 global.namaBot = "Castorice Assistant";
 global.chatowner = "https://wa.me/6285169432892"
-global.saluran = "https://whatsapp.com/channel/0029Vax676I2UPBH9X33nN2v" // Tambahan agar menu.js tidak error
+global.saluran = "https://whatsapp.com/channel/0029Vb6hwcUBA1f6rtoBaB2x" // Tambahan agar menu.js tidak error
 global.prefix = /^[./!#]/;
 
 // ================= [ PENGATURAN API KEYS ] =================

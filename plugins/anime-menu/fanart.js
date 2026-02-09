@@ -10,7 +10,7 @@ export default {
         
         // --- 1. REACT: Mulai Proses ---
         await conn.sendMessage(m.chat, { react: { text: '⏱️', key: m.key } });
-        const fakeQuoted = {
+        const fake = {
             key: { fromMe: false, participant: `0@s.whatsapp.net`, remoteJid: "status@broadcast" },
             message: { conversation: command }
         };
@@ -53,7 +53,7 @@ export default {
             // 5. Kirim via relayMessage (Logic Paten Master)
             const msg = generateWAMessageFromContent(m.chat, { 
                 viewOnceMessage: { message: { interactiveMessage } } 
-            }, { userJid: conn.user.id, quoted: fakeQuoted });
+            }, { userJid: conn.user.id, quoted: fake });
             
             await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id });
 

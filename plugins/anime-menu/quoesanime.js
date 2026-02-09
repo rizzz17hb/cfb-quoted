@@ -31,7 +31,7 @@ export default {
     category: 'anime',
     exec: async ({ conn, m, usedPrefix, command }) => {
         await conn.sendMessage(m.chat, { react: { text: '📜', key: m.key } });
-        const fakeQuoted = {
+        const fake = {
             key: { fromMe: false, participant: `0@s.whatsapp.net`, remoteJid: "status@broadcast" },
             message: { conversation: command }
         };
@@ -73,7 +73,7 @@ export default {
 
             const msg = generateWAMessageFromContent(m.chat, { 
                 viewOnceMessage: { message: { interactiveMessage } } 
-            }, { userJid: conn.user.id, quoted: fakeQuoted })
+            }, { userJid: conn.user.id, quoted: fake })
             
             await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id })
             await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } })

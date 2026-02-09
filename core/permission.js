@@ -1,5 +1,5 @@
 const adminCache = new Map();
-const fakeQuoted = {
+const fake = {
     key: { fromMe: false, participant: "0@s.whatsapp.net", remoteJid: "status@broadcast" },
     message: { conversation: "🛡️permission system" }
 }
@@ -48,7 +48,7 @@ export const checkPermission = async (m, plugin, conn) => {
         await conn.sendMessage(m.chat, {
                 image: { url: global.url },
                 caption: `⚠️ *AKSES DITOLAK:* Fitur ini hanya untuk Owner bot.`
-            }, { quoted: fakeQuoted });
+            }, { quoted: fake });
         return false;
     }
 
@@ -57,7 +57,7 @@ export const checkPermission = async (m, plugin, conn) => {
         await conn.sendMessage(m.chat, {
                 image: { url: global.url },
                 caption: `⚠️ *CHAT GRUP:* Fitur ini hanya dapat digunakan di dalam grup.`
-            }, { quoted: fakeQuoted });
+            }, { quoted: fake });
         return false;
     }
 
@@ -66,7 +66,7 @@ export const checkPermission = async (m, plugin, conn) => {
         await conn.sendMessage(m.chat, {
                 image: { url: global.url },
                 caption: `⚠️ *ADMIN ONLY:* Perintah ini khusus untuk Admin grup.`
-            }, { quoted: fakeQuoted });
+            }, { quoted: fake });
         return false;
     }
 
@@ -75,7 +75,7 @@ export const checkPermission = async (m, plugin, conn) => {
         await conn.sendMessage(m.chat, {
                 image: { url: global.url },
                 caption: `⚠️ *BOT BUKAN ADMIN:* Jadikan bot sebagai Admin agar fitur ini berfungsi.`
-            }, { quoted: fakeQuoted });
+            }, { quoted: fake });
         return false;
     }
 
@@ -84,7 +84,7 @@ export const checkPermission = async (m, plugin, conn) => {
         await conn.sendMessage(m.chat, {
                 image: { url: global.url },
                 caption: `⚠️ *PREMIUM ONLY:* Member premium saja yang bisa akses. Ketik .owner untuk beli.`
-            }, { quoted: fakeQuoted });
+            }, { quoted: fake });
         return false;
     }
 
@@ -94,7 +94,7 @@ export const checkPermission = async (m, plugin, conn) => {
             await conn.sendMessage(m.chat, {
                 image: { url: global.url },
                 caption: `❌ *LIMIT HABIS:* Limit harian kamu habis. Tunggu jam 00:00 atau beli Premium.`
-            }, { quoted: fakeQuoted });
+            }, { quoted: fake });
             return false;
         }
     }
@@ -106,7 +106,7 @@ export const checkPermission = async (m, plugin, conn) => {
             await conn.sendMessage(m.chat, {
                 image: { url: global.url },
                 caption: `🔞 *NSFW ALERT:* Fitur dewasa (NSFW) dinonaktifkan di grup ini.`
-            }, { quoted: fakeQuoted });
+            }, { quoted: fake });
             return false;
         }
     }

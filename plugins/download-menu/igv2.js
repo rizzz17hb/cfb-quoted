@@ -6,8 +6,16 @@ export default {
     alias: ['igv2', 'igdlv2'],
     category: 'download',
     limit: true,
-    async exec({ conn, m, args, text }) {
+    async exec({ conn, m, args, text, command }) {
         let input = text || (m.quoted ? m.quoted.text : args[0]);
+        const fake = {
+            key: { fromMe: false, participant: `0@s.whatsapp.net`, remoteJid: "status@broadcast" },
+            message: { conversation: command }
+        };
+        const fail = {
+            key: { fromMe: false, participant: "0@s.whatsapp.net", remoteJid: "status@broadcast" },
+            message: { conversation: "❌failed" }
+        };
 
         if (!input || !/instagram\.com/i.test(input)) {
             // --- 1. REACT PAS LINK KOSONG / SALAH ---
@@ -17,7 +25,7 @@ export default {
             return conn.sendMessage(m.chat, { 
                 image: { url: global.download },
                 caption: "Mana link Instagramnya?\nPastikan link yang kamu masukkan benar ya Master!" 
-            }, { quoted: m });
+            }, { quoted: fail });
         }
 
         const regex = /(https?:\/\/(?:www\.)?instagram\.com\/(p|reel|tv)\/[a-zA-Z0-9_-]+\/?)/;
@@ -25,7 +33,7 @@ export default {
         if (!url) return conn.sendMessage(m.chat, { 
                 image: { url: global.download },
                 caption: "Link Instagram tidak valid!" 
-            }, { quoted: m });
+            }, { quoted: fail });
 
         await m.react('⏱️');
 
@@ -60,14 +68,13 @@ export default {
 
             const interactiveMessage = {
                 header: {
-                    title: "✅ *Instagram Success*",
                     hasMediaAttachment: true,
                     ...(isVideoLast ? { videoMessage: mediaHeader.videoMessage } : { imageMessage: mediaHeader.imageMessage })
                 },
                 body: { 
-                    text: `✨ *Ｉ Ｎ Ｓ Ｔ Ａ Ｇ Ｒ Ａ Ｍ*\n\nBerhasil mengunduh *${result.length}* media.\n` 
+                    text: `❏ Ｉ Ｎ Ｓ Ｔ Ａ Ｇ Ｒ Ａ Ｍ ❏\nBerhasil mengunduh *${result.length}* media.\n` 
                 },
-                footer: { text: "Castorie Assistant • Radja Iblis" },
+                footer: { text: global.footer },
                 nativeFlowMessage: {
                     buttons: [{
                         name: "quick_reply",
@@ -81,7 +88,7 @@ export default {
 
             const msg = generateWAMessageFromContent(m.chat, { 
                 viewOnceMessage: { message: { interactiveMessage } } 
-            }, { userJid: conn.user.id });
+            }, { userJid: conn.user.id, quoted: fake });
 
             await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id });
             await m.react('✅');
@@ -92,7 +99,7 @@ export default {
             await conn.sendMessage(m.chat, {
                     image: { url: global.download },
                     caption: `❌ *Error:* ${e.message}`
-                }, { quoted: m });
+                }, { quoted: fail });
         }
     }
 };

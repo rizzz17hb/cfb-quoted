@@ -27,7 +27,7 @@ export default {
             return files.length > 0 ? fs.readFileSync(path.join(assetsPath, files[Math.floor(Math.random() * files.length)])) : null;
         };
 
-        const fakeQuoted = {
+        const fake = {
             key: {
                 fromMe: false,
                 participant: `0@s.whatsapp.net`,
@@ -48,7 +48,7 @@ export default {
                 
                 return conn.sendMessage(m.chat, { 
                     ...(ownerPhoto ? { image: ownerPhoto, caption: captEmpty } : { text: captEmpty }) 
-                }, { quoted: fakeQuoted });
+                }, { quoted: fake });
             }
 
             // 2. State & Reaction
@@ -94,7 +94,7 @@ Aturan bicara: Manis, manja, panggil Sayang/Mas Radja, jangan ngaku robot, janga
 
             await conn.sendMessage(m.chat, { 
                 ...(ownerPhoto ? { image: ownerPhoto, caption: finalCaption } : { text: finalCaption })
-            }, { quoted: fakeQuoted });
+            }, { quoted: fake });
 
             await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
 
@@ -106,7 +106,7 @@ Aturan bicara: Manis, manja, panggil Sayang/Mas Radja, jangan ngaku robot, janga
 
             await conn.sendMessage(m.chat, { 
                 ...(ownerPhoto ? { image: ownerPhoto, caption: errMsg } : { text: errMsg })
-            }, { quoted: fakeQuoted });
+            }, { quoted: fake });
         }
     }
 };

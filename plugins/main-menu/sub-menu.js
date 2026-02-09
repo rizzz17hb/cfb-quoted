@@ -26,7 +26,7 @@ export default {
         let categoryTarget = command.replace('menu', '').toLowerCase();
         let listFitur = [];
 
-        const fakeQuoted = {
+        const fake = {
             key: { fromMe: false, participant: `0@s.whatsapp.net`, remoteJid: "status@broadcast" },
             message: { conversation: command }
         };
@@ -104,7 +104,7 @@ export default {
             return conn.sendMessage(m.chat, { 
                 image: { url: global.fake }, 
                 caption: `❌ **AKSES TERBATAS**\n\n${check.msg}` 
-            }, { quoted: fakeQuoted });
+            }, { quoted: fake });
         }
 
         let header = `╭── ❏ *I N F O R M A T I O N* ❏
@@ -136,7 +136,7 @@ export default {
                 return conn.sendMessage(m.chat, { 
                     image: finalMedia,
                     caption: `_Maaf, untuk kategori *${categoryTarget}* tidak ditemukan atau mungkin masih dalam tahap pengembangan🙏._` 
-                }, { quoted: fakeQuoted });
+                }, { quoted: fake });
             }
 
             listFitur.push(`\n╭── ❏ *${categoryTarget.toUpperCase()} MENU* ❏`);
@@ -157,9 +157,9 @@ yang dirancang untuk memberikan kemudahan akses informasi, hiburan, dan alat ban
             };
 
             if (finalMedia) {
-                await conn.sendMessage(m.chat, { image: finalMedia, ...sendOptions }, { quoted: fakeQuoted });
+                await conn.sendMessage(m.chat, { image: finalMedia, ...sendOptions }, { quoted: fake });
             } else {
-                await conn.sendMessage(m.chat, { image: { url: global.url }, ...sendOptions }, { quoted: fakeQuoted });
+                await conn.sendMessage(m.chat, { image: { url: global.url }, ...sendOptions }, { quoted: fake });
             }
             await m.react('✅');
         } catch (e) {
@@ -169,7 +169,7 @@ yang dirancang untuk memberikan kemudahan akses informasi, hiburan, dan alat ban
                 image: { url: global.fake },
                 caption: 'gagal memuat list kategori menu', 
                 mentions: [m.sender] 
-            }, { quoted: fakeQuoted });
+            }, { quoted: fake });
         }
     }
 };
