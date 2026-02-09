@@ -1,0 +1,87 @@
+{
+  "users": {
+    "120363422907578700@g.us": {
+      "name": "User",
+      "limit": 100,
+      "pluginLimit": 0,
+      "premium": true,
+      "premiumTime": 0,
+      "lastSeen": 1770444213828,
+      "totalChat": 65,
+      "banned": false
+    },
+    "40674011381811@lid": {
+      "name": "the iregular person",
+      "limit": 999999,
+      "pluginLimit": 0,
+      "premium": true,
+      "premiumTime": 0,
+      "lastSeen": 1770638783625,
+      "totalChat": 38,
+      "banned": false
+    },
+    "59949774303298@lid": {
+      "name": "Castorice Assistant",
+      "limit": 100,
+      "pluginLimit": 0,
+      "premium": true,
+      "premiumTime": 0,
+      "lastSeen": 1770440496398,
+      "totalChat": 1,
+      "banned": false
+    },
+    "6283146092848@s.whatsapp.net": {
+      "name": "User",
+      "limit": 999999,
+      "pluginLimit": 0,
+      "premium": true,
+      "premiumTime": 0,
+      "lastSeen": 1770638742493,
+      "totalChat": 5,
+      "banned": false
+    }
+  },
+  "chats": {
+    "120363422907578700@g.us": {
+      "name": "User",
+      "mute": false,
+      "welcome": true,
+      "nsfw": false,
+      "antidelete": true,
+      "antilink": false
+    }
+  },
+  "groups": {},
+  "stats": {
+    "totalCommand": 0,
+    "uptime": 1770438013694
+  },
+  "settings": {
+    "self": false,
+    "pconly": false,
+    "gconly": false,
+    "antispam": true,
+    "maintenance": false,
+    "greeting": true,
+    "leveling": true,
+    "lastReset": "Mon Feb 09 2026",
+    "6283146092848": {
+      "greeting": false
+    }
+  },
+  "logs": [
+    {
+      "command": "GACHABA",
+      "reason": "ENOENT: no such file or directory, open '/workspaces/castorice-assistant-by-radja/assets/anime'",
+      "time": "07/02/26, 05.07.07",
+      "sender": "40674011381811@lid"
+    },
+    {
+      "command": "GACHABA",
+      "reason": "e is not defined",
+      "time": "07/02/26, 05.09.21",
+      "sender": "40674011381811@lid",
+      "trace": "at Object.exec (file:///workspaces/castorice-assistant-by-radja/plugins/anime-menu/bluearchieve.js?u=1770440948637:69:40)"
+    }
+  ]
+}

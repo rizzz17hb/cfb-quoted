@@ -1,0 +1,514 @@
+castorice-assistant-project/
+├── .gitignore
+├── README.md
+├── assets/
+│   ├── ai.jpg = aimenu
+│   ├── aiao.jpg =aiaomeu dst
+│   ├── allmenu.jpg
+│   ├── anime.jpg
+│   ├── download.jpg
+│   ├── fake.jpg
+│   ├── fun.jpg
+│   ├── grup.jpeg
+│   ├── menu.mp4
+│   ├── nsfw.jpg
+│   ├── owner1.jpg
+│   ├── owner2.jpg
+│   ├── owner3.jpg
+│   ├── premium.jpg
+│   ├── quotes.jpg
+│   ├── search.jpg
+│   ├── sosmed.jpg
+│   ├── stalking.jpeg
+│   ├── sticker.jpg
+│   ├── thumbnail.jpeg
+│   └── tools.jpg
+├── config.js
+├── core/
+│   ├── context.js
+│   ├── cooldown.js
+│   ├── dispatcher.js
+│   ├── error.js
+│   ├── greeting.js
+│   ├── leveling.js
+│   ├── limiter.js
+│   ├── logger.js
+│   ├── permission.js
+│   ├── registry.js
+│   └── rolehandling.js
+├── data/
+│   ├── chat.json
+│   ├── database.json
+│   ├── kategori.json
+│   └── leveling.json
+├── error.log
+├── handler.js
+├── hasil.txt
+├── index.js
+├── lib/
+│   ├── database.js
+│   ├── limit.js
+│   ├── log.js
+│   ├── scraper/
+│   │   ├── index.js
+│   │   └── upload.js
+│   ├── start.js
+│   ├── typo.js
+│   └── utils/
+│       ├── delay.js
+│       ├── fetch.js
+│       ├── format.js
+│       └── protect.js
+├── logs/
+│   ├── 2026-01-27.log
+│   └── 2026-01-29.log
+├── package-lock.json
+├── package.json
+├── plugins/
+├── scaner.js
+├── session/
+├── struktur.txt
+└── testlink.txt
+
+Kamu adalah engineer Node.js senior.
+
+KONTEKS:
+Saya sedang membangun WhatsApp bot menggunakan Baileys dengan Node.js v20 (ESM only).
+Struktur folder sudah final.
+Bot harus support:
+- Custom pairing code via global.code di config.js
+- Semua jenis button: text, URL, call, quick reply
+- Node.js ESM
+- Plugin logic only (tidak boleh cek permission, limit, atau pairing)
+- Dispatcher adalah satu-satunya tempat reject command
+
+DEPENDENCY YANG BOLEH DIPAKAI:
+- "@arceos/baileys": "^10.0.45"       → WA engine
+- "axios": "^1.6.0"                  → HTTP request
+- "cheerio": "^1.0.0"                → Scraping HTML
+- "moment-timezone": "^0.5.34"       → Waktu / timezone
+- "chalk": "^4.1.2"                   → Console styling
+- "pino": "^8.0.0"                    → Logging
+- "sharp": "^0.33.0"                  → Image processing
+- "jimp": "^1.6.0"                     → Image ringan / cepat
+- "fluent-ffmpeg": "^2.1.3"          → Video/audio processing
+- "@ffmpeg-installer/ffmpeg": "^1.1.0" → ffmpeg binary
+- "qrcode-terminal": "^0.12.0"       → QR login WA
+- "yt-search": "^2.13.1"              → YouTube search (opsional: pilih satu scraper)
+- Semua built-in Node.js modules (fs, path, os, util, child_process, querystring, readline, https) boleh dipakai tanpa install
+
+ATURAN MUTLAK:
+- Jangan pakai dependency selain yang disebut di atas
+- Jangan tambah file
+- Jangan ubah nama folder
+- Jangan pakai CommonJS
+- Hanya generate file yang diminta
+- Plugin hanya logic fitur
+- Dispatcher satu-satunya tempat menolak command
+
+TUJUAN PROMPT:
+Jelaskan spesifikasi kode tiap file core/plugin beserta rules implementasinya.
+Jangan generate kode, hanya jelaskan spesifikasi lengkap untuk developer/AI agar bisa generate kode sesuai aturan.
+
+SPESIFIKASI PER BAGIAN:
+
+1. config.js
+- Simpan global.code, owner, prefix, apiKeys
+- Export object ESM
+
+2. core/pairing.js
+- Fungsi: checkPairing(userCode)
+- Cek dengan global.code
+- Throw error kalau salah
+- Hanya dipanggil dari dispatcher
+
+3. core/dispatcher.js
+- Input: (sock, msg)
+- Ambil ctx dari context.js
+- Cek pairing via core/pairing.js
+- Cek permission via core/permission.js
+- Cek limit via core/limiter.js
+- Load plugin via registry.js
+- Jalankan plugin.execute(ctx)
+- Tangani semua jenis button/template
+- Tangani error via core/error.js
+
+4. core/context.js
+- Normalisasi message menjadi ctx
+- ctx.sender, ctx.text, ctx.args, ctx.command, ctx.isGroup
+- ctx.reply(text, buttons)
+- ctx.sendButton(text, buttons)
+- ctx.sendTemplate(text, template)
+- Plugin cukup panggil ctx helper
+
+5. plugins/*/*.js
+- Export default object:
+  - name, alias, category, limit, premium, owner, group, execute(ctx)
+- Hanya logic feature
+- Jangan cek pairing/limit/permission
+- Bisa pakai ctx helper untuk kirim button/template
+
+6. lib/database.js & core/limiter.js
+- Database JSON wrapper
+- Limit user harian
+- Plugin tidak boleh akses langsung database
+
+7. core/error.js
+- Tangani semua error dari plugin/dispatcher
+- Balikkan message ke user, jangan crash bot
+
+8. Button Support
+- Semua button dikirim via ctx helper
+- Text buttons → buttonsMessage
+- URL / Call / Quick reply → templateMessage
+- Plugin cukup panggil ctx.sendButton/sendTemplate
+
+HASIL YANG DIHARAPKAN:
+- Developer/AI mengerti setiap file core/plugin
+- Bisa generate kode sesuai spesifikasi dengan aman
+- Semua pairing/button/Node20 ESM jelas
+- Hanya pakai dependency yang sudah ditentukan
+
+
+
+DISPACTH BACKUP
+
+
+import fs from 'fs';
+import util from 'util';
+import { exec } from 'child_process';
+import { plugins, cmdMap } from './registry.js';
+import { checkPermission } from './permission.js';
+import { isCooling } from './cooldown.js';
+import { logError } from './error.js';
+import { logger } from './logger.js';
+
+/**
+ * Otak Utama Radja Engine V1
+ * Versi Full Optimized - High Speed Execution
+ */
+export default async (conn, m) => {
+    try {
+        // ---------------- [ 1. DATABASE SYSTEM ] ----------------
+        global.db = global.db || { users: {}, chats: {}, settings: {} };
+        global.opts = global.opts || {};
+
+        // Inisialisasi User
+        if (m.sender && !global.db.users[m.sender]) {
+            global.db.users[m.sender] = {
+                name: m.pushName || 'User',
+                limit: 20,
+                premium: false,
+                premiumTime: 0,
+                lastSeen: Date.now(),
+                totalChat: 0,
+                banned: false
+            };
+        }
+
+        // Inisialisasi Chat Grup
+        if (m.isGroup && !global.db.chats[m.chat]) {
+            global.db.chats[m.chat] = {
+                name: m.pushName || 'Group Chat',
+                mute: false,
+                welcome: true,
+                nsfw: false,
+                antidelete: true,
+                antilink: false
+            };
+        }
+
+        const user = global.db.users[m.sender];
+        const chat = m.isGroup ? global.db.chats[m.chat] : null;
+
+        // ---------------- [ 2. GLOBAL SYSTEM GUARDS ] ----------------
+        if (global.opts['self'] && !m.isOwner && !m.fromMe) return;
+        if (user?.banned && !m.isOwner) return;
+
+        // C. AUTO-EXPIRING PREMIUM
+        if (user?.premium && user.premiumTime > 0 && Date.now() > user.premiumTime) {
+            user.premium = false;
+            user.premiumTime = 0;
+            user.limit = 20;
+            await m.reply('🚀 *INFO:* Masa premium kamu telah habis. Terima kasih sudah berlangganan Radja Engine!');
+        }
+
+        // D. UPDATE STATS
+        if (user) {
+            user.lastSeen = Date.now();
+            user.totalChat += 1;
+            if (m.isOwner) {
+                user.premium = true;
+                user.limit = 999999;
+            }
+        }
+
+        // ---------------- [ 3. LOGGING ] ----------------
+        if (m.isCmd) {
+            const usedRAM = (process.memoryUsage().rss / 1024 / 1024).toFixed(2);
+            const chatFrom = m.isGroup ? `[G] ${m.chat.split('@')[0]}` : `[P] ${m.sender.split('@')[0]}`;
+            logger.info(`CMD: ${m.command} | From: ${m.pushName} (${chatFrom}) | RAM: ${usedRAM}MB`);
+        }
+
+        // ---------------- [ 4. EXECUTION ENGINE ] ----------------
+        if (m.isCmd) {
+            const pluginName = cmdMap.get(m.command);
+            const plugin = plugins.get(pluginName);
+
+            if (plugin) {
+                // 1. Mute Check
+                if (chat?.mute && !m.isOwner && !m.isAdmin) return;
+
+                // 2. Permission Check
+                if (!await checkPermission(m, plugin, conn)) return;
+
+                // 3. Cooldown Check
+                const cooldownTime = isCooling(m.sender, m.command);
+                if (cooldownTime && !m.isOwner) {
+                    return m.reply(`⏱️ Slow down... Tunggu *${cooldownTime}s* lagi.`);
+                }
+
+                // 4. Limit Check
+                if (plugin.limit && user.limit <= 0 && !user.premium && !m.isOwner) {
+                    return m.reply('❌ Limit harian kamu habis! Tunggu reset atau beli Premium.');
+                }
+
+                try {
+                    // 5. Eksekusi Fitur (DENGAN PENAMBAHAN PLUGINS)
+                    await plugin.exec({
+                        conn, m,
+                        prefix: m.prefix,
+                        usedPrefix: m.prefix, // Sering dipake di menu
+                        command: m.command,
+                        args: m.args,
+                        text: m.text,
+                        user, chat,
+                        plugins // <--- WAJIB ADA BIAR MENU GAK ERROR & MAINTENANCE
+                    });
+
+                    // 6. Konsumsi Limit
+                    if (plugin.limit && !m.isOwner && !user.premium) {
+                        user.limit = Math.max(0, user.limit - 1);
+                    }
+                } catch (err) {
+                    logger.error(`Plugin Failure: ${m.command}`, err);
+                    logError(m.command, err, m);
+                    m.reply(`❌ Terjadi kesalahan pada fitur *${m.command}*\n\nError: ${err.message}`);
+                }
+            }
+        }
+
+        // ---------------- [ 5. OWNER TOOLS ] ----------------
+        if (m.isOwner) {
+            if (m.body.startsWith('>> ')) {
+                try {
+                    let evaled = await eval(`(async () => { ${m.body.slice(3).trim()} })()`);
+                    if (typeof evaled !== 'string') evaled = util.inspect(evaled);
+                    m.reply(evaled);
+                } catch (e) { m.reply(util.format(e)); }
+            }
+            if (m.body.startsWith('$ ')) {
+                exec(m.body.slice(2).trim(), (err, stdout) => {
+                    if (err) return m.reply(util.format(err));
+                    if (stdout) m.reply(stdout);
+                });
+            }
+        }
+
+    } catch (e) {
+        logger.error('FATAL DISPATCHER ERROR', e);
+    }
+};
+
+
+
+
+
+
+ae432d76-cdaa-49c2-971c-fc128acc3b39:T9j7G-mVEk96uAS85BNb6WMrEKoVyaPU
+
+
+const judul = "`Ｃ Ａ Ｓ Ｔ Ｏ Ｒ Ｉ Ｃ Ｅ`";
+        const deskripsi = toSmallCaps("ᴄᴀsᴛᴏʀɪᴄᴇ ᴀssɪsᴛᴀɴᴛ ᴀᴅᴀʟᴀʜ ᴇɴɢɪɴᴇ ᴏᴛᴏᴍᴀsɪ ᴘʀᴇᴍɪᴜᴍ ʏᴀɴɢ ᴍᴇɴɢɪɴᴛᴇɢʀᴀsɪᴋᴀɴ ᴀʀsɪᴛᴇᴋᴛᴜʀ ᴍᴜʟᴛɪ-ᴅᴇᴠɪᴄᴇ ᴜɴᴛᴜᴋ ᴍᴇɴᴊᴀᴍɪɴ sᴛᴀʙɪʟɪᴛᴀs ᴅᴀɴ ᴋᴇᴄᴇᴘᴀᴛᴀɴ ɪɴᴛᴇʀᴀᴋsɪ ᴛᴀɴᴘᴀ ʜᴀᴍʙᴀᴛᴀ sᴇᴄᴀʀᴀ ʀᴇᴀʟ-ᴛɪᴍᴇ ᴛᴀɴᴘᴀ ᴋᴇᴛᴇʀɢᴀɴᴛᴜɴɢᴀɴ ᴘᴀᴅᴀ sᴍᴀʀᴛᴘʜᴏɴᴇ.");
+
+        let bodyText = `
+${judul}
+
+${deskripsi}
+
+╭── ❑ Castorice Assistant ❑
+│ \`\`\`✦ Bot Name  : Castorice Assistant\`\`\`
+│ \`\`\`✦ Developer : Radja Iblis\`\`\`
+│ \`\`\`✦ From      : sender sesuai role (premium, free, owner)\`\`\`
+│ \`\`\`✦ Id / Jid  : number dari sender\`\`\`
+│ \`\`\`✦ Uptime    : ${runtime(process.uptime())}\`\`\`
+│ \`\`\`✦ Status    : ${userStatus}\`\`\`
+│ \`\`\`✦ Command   : misal menu\`\`\`
+│ \`\`\`✦ Ram       : memoryUsage\`\`\`
+│ \`\`\`✦ Privat    : misal True\`\`\`
+│ \`\`\`✦ Group     : misal False\`\`\`
+╰───────────────────────── ❑
+
+
+        console.log(`\x1b[36m[ INFO ]\x1b[0m ${text}`);
+
+╭── ❑ Castorice Assistant ❑
+│ ✦ Bot Name    : Castorice Assistant
+│ ✦ Developer   : Radja Iblis
+│ ✦ From        : Owner
+│ ✦ Id / Jid    : 120363422907578700@g.us jidnya itu isi disini kalo group true, kalo privat true pake nomer
+│ ✦ Uptime      : 0d 0h 0m 36s
+│ ✦ Status      : Active
+│ ✦ Command     : None (Natural)
+│ ✦ Ram         : 109.20 MB
+│ ✦ Privat      : False
+│ ✦ Group       : True 
+╰───────────────────────── ❑
+
+╭── ❑ Castorice Assistant ❑ 
+│ ✦ From        : Owner
+│ ✦ Id / Jid    : 120363422907578700@g.us
+│ ✦ Uptime      : 0d 0h 0m 15s
+│ ✦ Status      : Active
+│ ✦ Command     : Typo (Detected)
+│ ✦ Ram         : 139.18 MB
+│ ✦ Privat      : False yang false ga usah aja (sesuai pengririm)
+│ ✦ Group       : True sebut yg true aja (sesuai pengririm)
+╰── ❑
+: nya warna putih. from, id/jid dsb warna putih. Owner dsb warna ungu , garis dan simbol warna putih. Castorice Assistant warna ungu
+kalo detect message dari gruo cukup group true aja, privatnya ga usah 
+
+
+misal user
+
+gambar thumbnail(bukan global.fake tapi global.group)
+caption misal: [TOXIC DETECTED] maaf ya kak, castorice ga suka orang toxic, atas izin mas radja, terpaksa pesan kakak castorice hapus, jangan diulangi lagi ya
+╭── ❑ Castorice Assistant ❑ 
+│ ✦ user        : 
+│ ✦ pelanggaran : toxic
+│ ✦ total       : berapa kali
+│ ✦ hak akses   : radja iblis
+╰── ❑
+
+gambar thumbnail(bukan global.fake tapi global.group)
+caption misal: [LINK DETECTED] aduh maaf bangeet kak, sistem mas radja ngebolehin castorice buat legalin pnyebaran link digroup ini, jadi terpaksa pesan kakak castorice hapus, jangan diulangi lagi ya
+╭── ❑ Castorice Assistant ❑ 
+│ ✦ user        : 
+│ ✦ pelanggaran : share link
+│ ✦ total       : berapa kali
+│ ✦ hak akses   : radja iblis
+╰── ❑
+
+misal gua
+
+gambar thumbnail(gambar owner yang 123 tadi)
+caption misal: [TOXIC DETECTED] jangan toxic dong sayang, castorice takut kalo ayang marah-marah, kamu lagi pusing atau capek ya.. sini castorice peluk.......(tambahin biar romantis. no delete)
+╭── ❑ Castorice Assistant ❑ 
+│ ✦ user        : 
+│ ✦ pelanggaran : toxic
+│ ✦ total       : berapa kali
+│ ✦ hak akses   : radja iblis
+╰── ❑
+
+gambar thumbnail(gambar owner yang 123 tadi)
+caption misal: [LINK DETECTED] (bikin seromantis mungkin.  no delete)
+│ ✦ user        : 
+│ ✦ pelanggaran : share link
+│ ✦ total       : berapa kali
+│ ✦ hak akses   : radja iblis
+╰── ❑
+
+kalo udah limit 7 
+gambar thumbnail (bukan global.fake tapi global.group)
+caption misal: [SYSTEN DETECTED] maaf ya kak, castorice udah tegur berkali-kali tapi kakak ulangi trus, atas izin mas radja, terpaksa kakak castorice kick dari group ini, byebye...
+╭── ❑ Castorice Assistant ❑ 
+│ ✦ user        : 
+│ ✦ pelanggaran : keras kepala
+│ ✦ total       : berapa kali
+│ ✦ hak akses   : radja iblis
+╰── ❑
+
+📌 Interactive Messaging
+Kirim pesan interaktif menggunakan tombol untuk meningkatkan interaksi pengguna.
+
+Lihat Contoh
+const buttons = [
+  { buttonId: "btn1", buttonText: { displayText: "Click Me" }, type: 1 },
+  { buttonId: "btn2", buttonText: { displayText: "Visit Site" }, type: 1 }
+];
+
+await sock.sendMessage(id, {
+  text: "Choose one:",
+  footer: "From Elaina with love 💜",
+  buttons,
+  headerType: 1
+});
+🖼️ Send Album
+Kirim beberapa media (gambar atau video) dalam satu pesan album.
+
+Lihat Contoh
+const media = [
+  { image: { url: "https://example.com/pic1.jpg" } },
+  { video: { url: "https://example.com/clip.mp4" } }
+];
+
+await sock.sendMessage(
+  id,
+  { album: media, caption: "Memories 💫" }
+);
+
+Castorice By Radja adalah asisten virtual berbasis **Node.js (Baileys Multi-Device)** yang dirancang untuk memberikan kemudahan akses informasi, 
+hiburan, dan alat bantu produktivitas secara otomatis melalui WhatsApp. Dengan sistem yang ringan, bot ini mampu merespon perintah dalam hitungan milidetik.
+🛠️ FITUR UTAMA
+
+Kami menyediakan puluhan kategori fitur yang rutin diperbarui:
+ 🛡️ **Group Management:** Automasi admin, kick/add, antilink, dan pengawasan grup 24/7.
+ 📥 **Media Downloader:** Download video (No Watermark), dari IG, YouTube, Facebook, dll.
+ 🎨 **Creative Tools:** Pembuat stiker otomatis (Image/Video to Sticker) dan konversi media yang cepat.
+ 🤖 **Artificial Intelligence:** Terintegrasi dengan ChatGPT untuk menjawab pertanyaan apa pun secara instan.
+ 🎮 **Fun & Games:** RPG Game, Tebak Gambar, dan fitur hiburan lainnya untuk menghidupkan suasana chat.
+ 🔞 **NSFW & Anime:** Database anime terlengkap dan fitur khusus dewasa (dengan proteksi ketat).
+
+
+image { url: global.download }
+
+╭── ❑ Ｔ Ｉ Ｋ Ｔ Ｏ Ｋ  Ｓ Ｌ Ｉ Ｄ Ｅ ❑ 
+│ \`\`\`✦ Username  : \`\`\`
+│ \`\`\`✦ Total     : ${res.images.length} Images\`\`\`
+│ \`\`\`✦ Link      : ${url.substring(0, 30)}...\`\`\`
+╰── ❑
+
+✦ Berhasil memproses foto dengan kualitas HD.
+✦ Deskripsi :
+
+Ｇｅｓｅｒ  ｋｅ  ｓａｍｐｉｎｇ  ➡️
+
+Command Menu,Nama File Gambar
+.aimenu,ai.jpg
+.beritamenu,berita.jpg
+.downloadmenu,download.jpg
+.settingsmenu,settings.jpg
+.searchmenu,search.jpg
+.toolsmenu,tools.jpg
+.othermenu,other.jpg
+.animemenu,anime.jpg
+.gamemenu,game.jpg
+.funmenu,fun.jpg
+.genshinmenu,genshin.jpg
+.quotesmenu,quotes.jpg
+.grupmenu,grup.jpg
+.stickermenu,sticker.jpg
+.stalkingmenu,stalking.jpg
+.storemenu,store.jpg
+.islamicmenu,islamic.jpg
+.primbonmenu,primbon.jpg
+.ownermenu,owner.jpg
+.premiummenu,premium.jpg
+.bugmenu,bug.jpg
+.nsfwmenu,nsfw.jpg
+.internetmenu,internet.jpg
+.educationmenu,education.jpg
+.musicmenu,music.jpg
+.lifestylemenu,lifestyle.jpg
+.anonymousmenu,anonymous.jpg
+.assistant-ownermenu,assistant-owner.jpg

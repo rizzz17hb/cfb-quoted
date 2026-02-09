@@ -1,0 +1,27 @@
+        const greeting = (() => {
+            const jam = new Date(
+                new Date().toLocaleString("en-US", { timeZone: "Asia/Jakarta" })
+            ).getHours();
+
+            let waktu;
+            if (jam >= 0 && jam < 4) waktu = "malam";
+            else if (jam >= 4 && jam < 10) waktu = "pagi";
+            else if (jam >= 10 && jam < 15) waktu = "siang";
+            else if (jam >= 15 && jam < 18) waktu = "sore";
+            else waktu = "malam";
+
+            if (userStatus === "Owner") {
+                return {
+                    pagi:  "Selamat pagi sayang💖",
+                    siang: "_Selamat siang sayang_",
+                    sore:  "_Selamat sore sayang💞_",
+                    malam: "_Selamat malam sayang_"
+                }[waktu];
+            }
+
+            return {
+                pagi:  "_Selamat Pagi user_",
+                siang: "_Selamat Siang user_",
+                sore:  "_Selamat Sore user_",
+                malam: "_Selamat Malam user_"
+            }[waktu];})();

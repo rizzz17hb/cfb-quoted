@@ -1,0 +1,54 @@
+{
+  "🤖 Artificial Intelligence": {
+    "ai": "🤖 Assistant ai cerdas yang membantu sesuai kebutuhan.",
+    "assistant": "🥰 Assistant AI pribadi khusus owner tamvan"
+  },
+  "🌟 Information": {
+    "berita": "📰 Update berita terkini dari berbagai sumber.",
+    "store": "🛒 Cek harga layanan toko digital."
+  },
+  "👥 Sosial Media": {
+    "grup": "👥 Kelola grup Master dengan fitur admin lengkap.",
+    "stalking": "🕵️ Pantau profil sosial media target Master.",
+    "anonymous": "🎭 kirim pesan rahasia atau chat anonim"
+  },
+  "📥 Downloader": {
+    "download": "📥 Unduh media dari berbagai platform sosial."
+  },
+  "🔍 Searching & Data": {
+    "search": "🔍 Cari informasi apa saja di internet.",
+    "internet": "📈 cek semua yang berhubungan dengan internet"
+  },
+  "🎮 Hiburan & Fun": {
+    "anime": "🌌 Informasi anime dan koleksi waifu Master.",
+    "game": "🕹️ Mainkan game seru untuk mengisi waktu.",
+    "fun": "🎭 Fitur hiburan dan lucu-lucuan.",
+    "quotes": "📝 Kumpulan kata bijak dan motivasi harian.",
+    "music": "🎵 putar musik favorit dan lirik yang tersedia",
+    "primbon": "🔮 Ramalan nasib dan primbon jawa.",
+    "rpg": "⚔️ mulai petualangan, grinding, dan lawan yang menantang"
+  },
+  "🕋 Religious & Spiritual": {
+    "islamic": "🕋 Fitur islami, jadwal sholat, dan Al-Quran."
+  },
+  "🏠 Lifestyle & Education": {
+    "lifestyle": "🏠 tips kesehatan, resep makanan, dan gaya hidup.",
+    "education": "🎓 belajar hal baru dengan kursus dan materi edukasi"
+  },
+  "🎨 Creativity": {
+    "sticker": "🎨 Ubah foto atau video Master menjadi stiker."
+  },
+  "👑 High Access": {
+    "owner": "👑 Fitur eksklusif khusus untuk Master.",
+    "bug": "👾 Payload testing dan keamanan sistem.",
+    "nsfw": "🔞 Konten khusus dewasa (18+).",
+    "premium": "💎 Fitur khusus untuk member Sultan/Premium."
+  },
+  "🛠️ Tools & Converter": {
+    "tools": "🛠️ Alat bantu praktis untuk keseharian Master.",
+    "other": "📂 Fitur pelengkap sistem bot."
+  },
+  "⚙️ Setting System": {
+    "settings": "⚙️ custom settings for system castorice assistant"
+  }
+}

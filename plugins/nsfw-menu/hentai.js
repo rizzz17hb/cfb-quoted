@@ -1,0 +1,72 @@
+import axios from 'axios';
+
+export default {
+    name: 'hentai',
+    alias: ['hentai'],
+    category: 'nsfw',
+    isPremium: true,
+    exec: async ({ conn, m }) => {
+        try {
+            // 1. Pakai m.react (Karena ini yang terbukti nyala di Pixiv lo)
+            await m.react('⏱️');
+
+            const { data } = await axios.get(`https://api.lolicon.app/setu/v2?num=15&r18=1&tag=hentai&size=regular`);
+            
+            let valid = [];
+            for (let x of data.data) {
+                if (valid.length >= 5) break;
+                try {
+                    const res = await axios.get(x.urls.regular, { 
+                        responseType: 'arraybuffer', 
+                        timeout: 5000 
+                    });
+                    if (res.status === 200) {
+                        valid.push({ ...x, buffer: Buffer.from(res.data) });
+                    }
+                } catch { continue; }
+            }
+
+            if (valid.length === 0) throw "Stok Hentai Kosong / Server Down.";
+
+            const titles = valid.map((v, i) => `${i + 1}. ${v.title}`).join('\n');
+            const authors = valid.map((v, i) => `${i + 1}. ${v.author}`).join('\n');
+            const links = valid.map((v, i) => `${i + 1}. https://pixiv.net/artworks/${v.pid}`).join('\n');
+
+            const caption = `✨ *HENTAI PREMIUM ALBUM* ✨\n` +
+                            `──────────────────────────\n\n` +
+                            `🔞 *Type:* Hentai / Full Core\n` +
+                            `📦 *Total:* 5 Ultra HD Slides\n` +
+                            `🔒 *Access:* High-Level Member\n\n` +
+                            `📑 *TITLES COLLECTION*\n${titles}\n\n` +
+                            `👤 *AUTHORS LIST*\n${authors}\n\n` +
+                            `🔗 *ORIGINAL LINKS*\n${links}\n\n` +
+                            `──────────────────────────\n` +
+                            `_Sedang mengirimkan file album..._`;
+
+            // 2. Kirim Header
+            await conn.sendMessage(m.chat, { 
+                image: { url: global.nsfw }, 
+                caption: caption 
+            }, { quoted: m });
+
+            // 3. Kirim Gambar dengan Mimetype (WAJIB ADA)
+            for (let img of valid) {
+                await conn.sendMessage(m.chat, { 
+                    image: img.buffer,
+                    mimetype: 'image/jpeg' 
+                });
+                await new Promise(r => setTimeout(r, 1000));
+            }
+            
+            // 4. React Sukses
+            await m.react('✅');
+
+        } catch (e) {
+            // 5. React Gagal
+            await m.react('❌');
+            await conn.sendMessage(m.chat, { 
+                caption: `❌ *SYSTEM ERROR*\n\n${e.message || e}` 
+            }, { quoted: m });
+        }
+    }
+};
