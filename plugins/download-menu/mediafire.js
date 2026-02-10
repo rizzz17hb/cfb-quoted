@@ -87,7 +87,15 @@ export default {
     alias: ['mfdl', 'mf', 'mfire'],
     category: 'download',
     desc: 'Download file dari MediaFire (Native HTTP)',
-    async exec({ conn, m, text, args }) {
+    async exec({ conn, m, text, args, command }) {
+      const fake = {
+        key: { fromMe: false, participant: `0@s.whatsapp.net`, remoteJid: "status@broadcast" },
+        message: { conversation: command }
+      };
+      const fail = {
+        key: { fromMe: false, participant: "0@s.whatsapp.net", remoteJid: "status@broadcast" },
+        message: { conversation: "❌failed" }
+      };
         try {
             // 1. INPUT HANDLING (Support Quote/Teks)
             let input = text || (m.quoted ? m.quoted.text : args[0]); // Pake args[0] biar lebih peka
@@ -100,7 +108,7 @@ export default {
                 return conn.sendMessage(m.chat, { 
                 image: { url: global.download },
                 caption: "❌ Kirim link MediaFire yang valid!\nContoh: .mf https://www.mediafire.com/file/.../file" 
-            }, { quoted: m });
+            }, { quoted: fail });
         }
 
             const mediafireUrl = url.trim();
@@ -129,11 +137,11 @@ export default {
 
             // GANTI M.REPLY -> CONN.SENDMESSAGE
             if (mime.startsWith('video/')) {
-                await conn.sendMessage(m.chat, { video: buffer, caption, mimetype: 'video/mp4' }, { quoted: m });
+                await conn.sendMessage(m.chat, { video: buffer, caption, mimetype: 'video/mp4' }, { quoted: fake });
             } else if (mime.startsWith('image/')) {
-                await conn.sendMessage(m.chat, { image: buffer, caption }, { quoted: m });
+                await conn.sendMessage(m.chat, { image: buffer, caption }, { quoted: fake });
             } else {
-                await conn.sendMessage(m.chat, { document: buffer, fileName, mimetype: mime, caption }, { quoted: m });
+                await conn.sendMessage(m.chat, { document: buffer, fileName, mimetype: mime, caption }, { quoted: fake });
             }
 
             await m.react('✅');
@@ -144,8 +152,8 @@ export default {
             // GANTI M.REPLY -> CONN.SENDMESSAGE + global.download
             await conn.sendMessage(m.chat, { 
                 image: { url: global.download },
-                caption: `❌ *GAGAL DOWNLOAD:* ${e.message}\n\nLink mungkin private, deleted, atau MediaFire lagi proteksi bot. Coba link lain atau tunggu update lagi.` 
-            }, { quoted: m });
+                caption: `❏ K E S A L A H A N  S Y S T E M ❏\nAlasan: ${e.message}\n\nLink mungkin private, deleted, atau MediaFire lagi proteksi bot. Coba link lain atau tunggu update lagi.` 
+            }, { quoted: fail });
         }
     }
 };

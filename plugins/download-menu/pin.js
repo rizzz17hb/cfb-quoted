@@ -20,12 +20,20 @@ async function getSnappinToken() {
 
 export default {
     name: 'pinterest',
-    alias: ['pindl', 'pinterestdl'], // Saya hapus 'pin' biar gak tabrakan sama command .pinterest (search)
+    alias: ['pindl', 'pinterestdl'],
     category: 'download',
     limit: true,
-    async exec({ conn, m, text, args }) {
+    async exec({ conn, m, text, args, command }) {
         // Ambil link dari teks, quote, atau argumen
         let input = text || (m.quoted ? m.quoted.text : args[0]);
+        const fake = {
+            key: { fromMe: false, participant: `0@s.whatsapp.net`, remoteJid: "status@broadcast" },
+            message: { conversation: command }
+        };
+        const fail = {
+            key: { fromMe: false, participant: "0@s.whatsapp.net", remoteJid: "status@broadcast" },
+            message: { conversation: "❌failed" }
+        };
         
         // FIX 1: Regex Support Link Pin Asli ATAU Link Gambar Langsung
         let url = input?.match(/https?:\/\/(www\.|id\.)?pinterest\.(com|it|ca|co\.uk|at|ch)\/pin\/[^\s?]+/i)?.[0] 
@@ -41,7 +49,7 @@ export default {
             return conn.sendMessage(m.chat, { 
                 image: { url: global.download }, // Ambil foto dari global variabel lu
                 caption: "*Format link salah atau kosong!*\nHarus link Pin Pinterest yang valid ya Master." 
-            }, { quoted: m });
+            }, { quoted: fail });
         }
         // --- 2. REACT LOADING PAS LINK VALID ---
         await conn.sendMessage(m.chat, { react: { text: '⏱️', key: m.key } });
@@ -52,8 +60,8 @@ export default {
             if (url.includes('i.pinimg.com')) {
                  await conn.sendMessage(m.chat, {
                     image: { url: url },
-                    caption: `Done! ✅ (Direct Image)`
-                }, { quoted: m });
+                    caption: `Done Ya! ✅ (Direct Image)`
+                }, { quoted: fake });
                 return await m.react('✅');
             }
 
@@ -110,8 +118,8 @@ export default {
 
             await conn.sendMessage(m.chat, {
                 [type]: { url: mediaUrl },
-                caption: `Done Radja! ✅\n\nType: ${type.toUpperCase()}`
-            }, { quoted: m });
+                caption: `Done Ya! ✅\n\nType: ${type.toUpperCase()}`
+            }, { quoted: fake });
 
             await m.react('✅');
 
@@ -123,8 +131,8 @@ export default {
             // Kirim pesan error dengan gambar global.download
             await conn.sendMessage(m.chat, {
                 image: { url: global.download },
-                caption: `Gagal download Pinterest. Mungkin link privat atau server scraper sedang error!`
-            }, { quoted: m });
+                caption: `❏ K E S A L A H A N  S Y S T E M ❏\nAlasan: Mungkin link privat atau server scraper sedang error!`
+            }, { quoted: fail });
         }
     }
 };
