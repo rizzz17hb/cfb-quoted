@@ -96,7 +96,7 @@ export default {
                 title: "🏠 DASHBOARD UTAMA",
                 rows: [
                     { title: "List Menu", id: `${usedPrefix}allmenu`, description: `📑 Semua perintah bot\n[ ${totalFitur} Fitur ]` },
-                    { title: "Donate", id: `${usedPrefix}donate`, description: `🧧 Support owner agar lebih semangat update script` }
+                    { title: "Donate", id: `${usedPrefix}donate`, description: `🧧 donate seikhlasnya ya adik2 heeh ..` }
                 ]
             },
             {
@@ -185,6 +185,15 @@ export default {
                     { title: "Bug Menu", id: `${usedPrefix}bugmenu`, description: getMenuData("bug", "👾 Payload testing dan keamanan sistem.") },
                     { title: "NSFW Menu", id: `${usedPrefix}nsfwmenu`, description: getMenuData("nsfw", "🔞 Konten khusus dewasa (18+).") },
                     { title: "Premium Menu", id: `${usedPrefix}premiummenu`, description: getMenuData("premium", "💎 Fitur khusus untuk member Sultan/Premium.") }
+                ]
+            },
+            {
+                title: "REQUEST DAN LAPOR",
+                rows: [
+                    { title: "Instagram Owner", id: `${usedPrefix}igowner`, description: `📞 Chat atau hubungi owner via Instagram` },
+                    { title: "Tiktok Owner", id: `${usedPrefix}ttowner`, description: `📞 Chat atau hubungi owner via Tiktok` },
+                    { title: "Telegram Owner", id: `${usedPrefix}teleowner`, description: `📞 Chat atau hubungi owner via telegram` },
+                    { title: "Grup chat", id: `${usedPrefix}grupchat`, description: `👥 grup update script, diskusi dan request fitur` }
                 ]
             }
         ];

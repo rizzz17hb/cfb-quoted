@@ -85,6 +85,7 @@ global.password = 'RADJA'
 
 global.url       = getAsset('thumbnail');
 global.fake      = getAsset('fake');
+global.sosmed    = getAsset('sosmed');
 global.download  = getAsset('download');
 global.tools     = getAsset('tools');
 global.nsfw      = getAsset('nsfw');

@@ -1,0 +1,19 @@
+[00.25.10] [INFO] EXEC: igowner | Method: Prefix | RAM: 242.29MB
+[00.37.09] [INFO] EXEC: igowner | Method: Prefix | RAM: 257.10MB
+[00.37.11] [ERROR] Plugin Failure: igowner | Cannot use 'in' operator to search for 'stream' in /workspaces/cfb-quoted/assets/sosmed.jpg
+[00.37.11] [ERROR-TRACE] at getStream (/workspaces/cfb-quoted/node_modules/@whiskeysockets/baileys/lib/Utils/messages-media.js:338:18)
+[00.49.11] [INFO] EXEC: igowner | Method: Prefix | RAM: 268.77MB
+[00.52.24] [INFO] EXEC: igowner | Method: Prefix | RAM: 264.51MB
+[01.06.37] [INFO] EXEC: igowner | Method: Prefix | RAM: 275.96MB
+[01.06.44] [INFO] EXEC: ttowner | Method: Prefix | RAM: 294.71MB
+[01.06.58] [INFO] EXEC: teleowner | Method: Prefix | RAM: 314.21MB
+[01.07.15] [INFO] EXEC: donate | Method: Prefix | RAM: 337.96MB
+[01.13.26] [INFO] EXEC: gcbot | Method: Prefix | RAM: 266.71MB
+[01.22.02] [INFO] EXEC: menu | Method: Prefix | RAM: 256.90MB
+[01.23.03] [INFO] EXEC: donate | Method: Prefix | RAM: 279.68MB
+[01.24.23] [INFO] EXEC: menu | Method: Prefix | RAM: 260.67MB
+[01.28.56] [INFO] EXEC: igowner | Method: Prefix | RAM: 259.45MB
+[01.29.10] [INFO] EXEC: ttowner | Method: Prefix | RAM: 277.20MB
+[01.29.20] [INFO] EXEC: teleowner | Method: Prefix | RAM: 301.70MB
+[01.29.31] [INFO] EXEC: grupchat | Method: Prefix | RAM: 323.08MB
+[01.29.43] [INFO] EXEC: donate | Method: Prefix | RAM: 325.08MB

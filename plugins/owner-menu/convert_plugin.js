@@ -15,11 +15,6 @@ export default {
     exec: async ({ conn, m, text, command, usedPrefix }) => {
         const pluginsPath = path.join(process.cwd(), 'plugins');
 
-        const toSmallCaps = (str) => {
-            const fonts = { 'a': 'ᴀ', 'b': 'ʙ', 'c': 'ᴄ', 'd': 'ᴅ', 'e': 'ᴇ', 'f': 'ꜰ', 'g': 'ɢ', 'h': 'ʜ', 'i': 'ɪ', 'j': 'ᴊ', 'k': 'ᴋ', 'l': 'ʟ', 'm': 'ᴍ', 'n': 'ɴ', 'o': 'ᴏ', 'p': 'ᴘ', 'q': 'ǫ', 'r': 'ʀ', 's': 's', 't': 'ᴛ', 'u': 'ᴜ', 'v': 'ᴠ', 'w': 'ᴡ', 'x': 'x', 'y': 'ʏ', 'z': 'ᴢ' };
-            return str.toLowerCase().split('').map(c => fonts[c] || c).join('');
-        };
-
         const getOwnerImage = () => {
             try {
                 const assetsPath = path.join(process.cwd(), 'assets');
@@ -53,7 +48,7 @@ export default {
                 fs.writeFileSync(filePath, code);
                 delete global.tempConvert[m.sender];
 
-                const successTeks = `╭── ❏ *${toSmallCaps("sʏsᴛᴇᴍ sᴛᴏʀᴀɢᴇ")}* ❏
+                const successTeks = `╭── ❏ *("sʏsᴛᴇᴍ sᴛᴏʀᴀɢᴇ")* ❏
 │ \`\`\`❏ Path    :\`\`\` plugins/${fileName}
 │ \`\`\`❏ Status  :\`\`\` Successfully Saved
 ╰───────────────➣`;

@@ -6,8 +6,8 @@
       "pluginLimit": 0,
       "premium": true,
       "premiumTime": 0,
-      "lastSeen": 1770669194352,
-      "totalChat": 118,
+      "lastSeen": 1770686985872,
+      "totalChat": 154,
       "banned": false
     },
     "40674011381811@lid": {
@@ -16,8 +16,8 @@
       "pluginLimit": 0,
       "premium": true,
       "premiumTime": 0,
-      "lastSeen": 1770669187914,
-      "totalChat": 63,
+      "lastSeen": 1770686983916,
+      "totalChat": 83,
       "banned": false
     },
     "59949774303298@lid": {
@@ -36,8 +36,8 @@
       "pluginLimit": 0,
       "premium": true,
       "premiumTime": 0,
-      "lastSeen": 1770647189249,
-      "totalChat": 24,
+      "lastSeen": 1770682530973,
+      "totalChat": 32,
       "banned": false
     }
   },
@@ -64,7 +64,7 @@
     "maintenance": false,
     "greeting": false,
     "leveling": true,
-    "lastReset": "Mon Feb 09 2026",
+    "lastReset": "Tue Feb 10 2026",
     "6283146092848": {
       "greeting": false
     }
@@ -82,6 +82,13 @@
       "time": "07/02/26, 05.09.21",
       "sender": "40674011381811@lid",
       "trace": "at Object.exec (file:///workspaces/castorice-assistant-by-radja/plugins/anime-menu/bluearchieve.js?u=1770440948637:69:40)"
+    },
+    {
+      "command": "IGOWNER",
+      "reason": "Cannot use 'in' operator to search for 'stream' in /workspaces/cfb-quoted/assets/sosmed.jpg",
+      "time": "10/02/26, 00.37.11",
+      "sender": "40674011381811@lid",
+      "trace": "at async default (file:///workspaces/cfb-quoted/core/dispatcher.js:143:17)"
     }
   ]
 }
