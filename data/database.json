@@ -6,8 +6,8 @@
       "pluginLimit": 0,
       "premium": true,
       "premiumTime": 0,
-      "lastSeen": 1770727288661,
-      "totalChat": 157,
+      "lastSeen": 1771077492572,
+      "totalChat": 174,
       "banned": false
     },
     "40674011381811@lid": {
@@ -16,8 +16,8 @@
       "pluginLimit": 0,
       "premium": true,
       "premiumTime": 0,
-      "lastSeen": 1770727283501,
-      "totalChat": 84,
+      "lastSeen": 1771077463573,
+      "totalChat": 90,
       "banned": false
     },
     "59949774303298@lid": {
@@ -32,7 +32,7 @@
     },
     "6283146092848@s.whatsapp.net": {
       "name": "User",
-      "limit": 999999,
+      "limit": 100,
       "pluginLimit": 0,
       "premium": true,
       "premiumTime": 0,
@@ -64,7 +64,7 @@
     "maintenance": false,
     "greeting": false,
     "leveling": true,
-    "lastReset": "Tue Feb 10 2026",
+    "lastReset": "Sat Feb 14 2026",
     "6283146092848": {
       "greeting": false
     }

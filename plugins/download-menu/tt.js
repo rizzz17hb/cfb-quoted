@@ -6,15 +6,23 @@ export default {
     alias: ['tt', 'tik', 'tok', 'ttdl'],
     category: 'download',
     limit: true,
-    async exec({ conn, m, args, text, usedPrefix }) {
+    async exec({ conn, m, args, text, usedPrefix, command }) {
         let url = text || (m.quoted ? m.quoted.text : args[0]);
+        const fake = {
+            key: { fromMe: false, participant: `0@s.whatsapp.net`, remoteJid: "status@broadcast" },
+            message: { conversation: command }
+        };
+        const fail = {
+            key: { fromMe: false, participant: "0@s.whatsapp.net", remoteJid: "status@broadcast" },
+            message: { conversation: "❌failed" }
+        };
 
         if (!url) {
             await m.react('❓');
             return conn.sendMessage(m.chat, { 
                 image: { url: global.download },
                 caption: "Mana link tiktok nya?" 
-            }, { quoted: m });
+            }, { quoted: fail });
         }
 
         await m.react('⏱️');
@@ -64,7 +72,7 @@ export default {
                             }
                         }
                     }
-                }, { userJid: conn.user.id });
+                }, { userJid: conn.user.id, quoted: fake });
 
                 await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id });
                 return await m.react('✅');
@@ -82,7 +90,6 @@ export default {
                         message: { 
                             interactiveMessage: {
                                 header: {
-                                    title: "`Ｃ Ａ Ｓ Ｔ Ｏ Ｒ Ｉ Ｃ Ｅ`",
                                     hasMediaAttachment: true,
                                     videoMessage: mediaVideo.videoMessage
                                 },
@@ -107,7 +114,7 @@ export default {
                             } 
                         } 
                     } 
-                }, { userJid: conn.user.id });
+                }, { userJid: conn.user.id, quoted: fake });
 
                 await conn.relayMessage(m.chat, msgVideo.message, { messageId: msgVideo.key.id });
                 await m.react('✅');
@@ -118,8 +125,8 @@ export default {
             await m.react('❌');
             await conn.sendMessage(m.chat, {
                 image: { url: global.download },
-                caption: `Gagal download tiktok, coba lagi nanti ya..!`
-            }, { quoted: m });
+                caption: `❏ K E S A L A H A N  S Y S T E M ❏\nGagal download tiktok, coba lagi nanti ya..!`
+            }, { quoted: fail });
         }
     }
 };

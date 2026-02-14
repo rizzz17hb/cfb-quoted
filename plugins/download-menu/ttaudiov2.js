@@ -4,9 +4,18 @@ export default {
     name: 'ttaudiov2',
     alias: ['ttmp3v2', 'ttav2'],
     category: 'download',
-    async exec({ conn, m, text, args }) {
+    async exec({ conn, m, text, args, command }) {
         let input = text || (m.quoted ? m.quoted.text : args[0]);
         if (!input) return; 
+        const fake = {
+            key: { fromMe: false, participant: `0@s.whatsapp.net`, remoteJid: "status@broadcast" },
+            message: { conversation: command }
+        };
+        const fail = {
+            key: { fromMe: false, participant: "0@s.whatsapp.net", remoteJid: "status@broadcast" },
+            message: { conversation: "❌failed" }
+        };
+
 
         const url = input.trim();
         if (!/(tiktok\.com|vt\.tiktok\.com|douyin\.com|v\.douyin\.com)/i.test(url)) {
@@ -14,7 +23,7 @@ export default {
             return conn.sendMessage(m.chat, { 
                 image: { url: global.download },
                 caption: "❌ *Link TikTok tidak valid!*" 
-            }, { quoted: m });
+            }, { quoted: fail });
         }
 
         await m.react('⏱️');
@@ -29,7 +38,7 @@ export default {
                 audio: { url: res.audio },
                 mimetype: 'audio/mpeg',
                 ptt: false 
-            });
+            }, { quoted: fake });
 
             await m.react('✅');
 
@@ -38,8 +47,8 @@ export default {
             await m.react('❌');
             await conn.sendMessage(m.chat, {
                 image: { url: global.download },
-                caption: `Gagal download audio v2 (TTSave), coba lagi nanti ya..!`
-            }, { quoted: m });
+                caption: `❏ K E S A L A H A N  S Y S T E M ❏\nGagal download audio v2 (TTSave), coba lagi nanti ya..!`
+            }, { quoted: fail });
         }
     }
 };

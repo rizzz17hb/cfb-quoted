@@ -76,11 +76,15 @@ export default async (conn, m) => {
         await logger(conn, ctx);
 
         // ---------------- [ 🚀 SMART TYPO DETECTOR ] ----------------
+        const fail = {
+            key: { fromMe: false, participant: "0@s.whatsapp.net", remoteJid: "status@broadcast" },
+            message: { conversation: "❌ failed" }
+        };
         const typo = await checkTypo(ctx); 
         if (typo) {
             ctx.isTypo = true; 
             m.isTypo = true; 
-            const title = "T Y P O  D E T E C T E D";
+            const title = "T Y P O   D E T E C T E D";
 
             let caption = `╭─── ❑ *${title}* ❑
 │ \`\`\`➢ Input    : ${typo.input}\`\`\`
@@ -91,12 +95,11 @@ export default async (conn, m) => {
 
             await m.react('🤨');
             const media = await prepareWAMessageMedia({ 
-                image: { url: global.fake } 
+                image: Buffer.isBuffer(global.fake) ? global.fake : { url: global.fake } 
             }, { upload: conn.waUploadToServer });
 
             const interactiveMessage = {
                 header: {
-                    title: "`Ｃ Ａ Ｓ Ｔ Ｏ Ｒ Ｉ Ｃ Ｅ`",
                     hasMediaAttachment: true,
                     imageMessage: media.imageMessage
                 },
@@ -126,7 +129,7 @@ export default async (conn, m) => {
                 viewOnceMessage: { 
                     message: { interactiveMessage } 
                 } 
-            }, { userJid: conn.user.id });
+            }, { userJid: conn.user.id, quoted: fail });
 
             await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id });
             return; 

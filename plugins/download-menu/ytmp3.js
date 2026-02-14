@@ -39,6 +39,15 @@ export default {
     exec: async ({ conn, m, args, text, usedPrefix, command }) => {
         // Ambil URL dari teks atau reply
         let url = text || (m.quoted ? m.quoted.text : args[0]);
+        const fake = {
+            key: { fromMe: false, participant: `0@s.whatsapp.net`, remoteJid: "status@broadcast" },
+            message: { conversation: command }
+        };
+        
+        const fail = {
+            key: { fromMe: false, participant: "0@s.whatsapp.net", remoteJid: "status@broadcast" },
+            message: { conversation: "❌ failed" }
+        };
 
         try {
             if (!url || !url.includes('youtu')) {
@@ -46,7 +55,7 @@ export default {
                 return await conn.sendMessage(m.chat, { 
                     image: { url: global.download }, 
                     caption: `Usage: ${usedPrefix + command} <YouTube URL>` 
-                }, { quoted: m })
+                }, { quoted: fail })
             }
 
             await m.react('⏱️')
@@ -55,7 +64,7 @@ export default {
             await conn.sendMessage(m.chat, { 
                 image: { url: global.download }, 
                 caption: '🚀 *Castorice sedang memproses...*\nAudio akan segera dikirim.' 
-            }, { quoted: m })
+            }, { quoted: fake })
 
             // 2. Ambil Data
             const info = await getMetadata(url)
@@ -77,7 +86,7 @@ export default {
                         renderLargerThumbnail: true
                     }
                 }
-            }, { quoted: m })
+            }, { quoted: fake })
 
             await m.react('✅')
 
@@ -86,8 +95,8 @@ export default {
             await m.react('❌')
             await conn.sendMessage(m.chat, { 
                 image: { url: global.download }, 
-                caption: `❌ *Gagal:* ${e.message}` 
-            }, { quoted: m })
+                caption: `❏ K E S A L A H A N  S Y S T E M ❏\nAlasan: ${e.message}` 
+            }, { quoted: fail })
         }
     }
 }
